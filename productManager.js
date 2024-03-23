@@ -69,11 +69,14 @@ const getProductById = (id) => {
     }
 }
 
+// Se pide mostrar todos los productos en el array products
+// Va a estar vacia, ya que el array products todavia no tiene objetos
+getProducts();
 
 //Inicializacion de productos
 addProduct("Producto 1", "El primer producto", 299, "http://www.google.com", "ADF121", 10)
 addProduct("Producto 2", "El segundo producto", 899, "http://www.google.com", "ADF122", 10)
-addProduct("Producto 3", "El tercer producto", 899, "http://www.google.com", "ADF123", 10)
+addProduct("Producto 3", "El tercer producto", 899, "http://www.google.com", "ADF122", 10)
 addProduct("Producto 4", "El cuarto producto", 899, "http://www.google.com", "ADF124", 10)
 addProduct("Producto 5", "El quinto producto", 899, "http://www.google.com", "ADF125")
 
