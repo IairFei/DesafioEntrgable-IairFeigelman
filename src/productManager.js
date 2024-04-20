@@ -1,17 +1,20 @@
 //Se inicializa el File System
-const fs = require('fs');
+// const fs = require('fs');
+
+import fs from 'fs';
 
 //Se crea un array con el nombre products
 let products = []
 
 //Se asigna un path file en el que va a contener el JSON de los productos
-let pathFile = "./data/products.json"
+let pathFile = "./src/data/products.json"
 
 
 //Esta funcion se utiliza para agregar el producto al array de products
 
-const addProduct = async (title, descrtiption, price, thumbnail, code, stock) => {
-
+const addProduct = async (product) => {
+    const { title, descrtiption, price, thumbnail, code, stock } = product;
+    await getProduct()
     //Aca se asignan las variables pasadas por parametro
 
         const newProduct ={
@@ -53,16 +56,21 @@ Si lo encuentra, avisa por consola que se encontro un objeto con el mismo code y
 }
 
 // Esta funcion devuelve todos los productos dentro del array products
-
-const getProducts = async () => {
+// Recibe por parametro el limite a mostrar
+const getProducts = async (limit) => {
   
     //En esta linea, readFile lee el contenido del path file y lo guarda en una constante
     const productsJson = await fs.promises.readFile(pathFile, "utf-8")
     //Se convierten los datos traidos como String en objetos y si no se pudo, devuelve un array vacio
     products = JSON.parse(productsJson) || []
 
-    //Retorna los productos en forma de objeto o un array vacia
-    return products
+    //Si el limite recibe undefined, retorna todos los productos
+    if (!limit) return products
+
+
+
+    //Retorna los productos con un limite obtenido por parametro, desde la posicion 0 hasta el limite
+    return products.slice(0, limit)
 };
 
 /* Esta funcion se utiliza para buscar un producto con un determinado id en el array products.
@@ -116,33 +124,10 @@ const deleteProduct = async (id) => {
 
 }
 
-
-//TEST
-
-// Se pide mostrar todos los productos en el array products
-// Va a estar vacia, ya que el array products todavia no tiene objetos
-getProducts();
-
-//Inicializacion de productos
-addProduct("Producto 1", "El primer producto", 299, "http://www.google.com", "ADF121", 10)
-addProduct("Producto 2", "El segundo producto", 899, "http://www.google.com", "ADF122", 10)
-addProduct("Producto 3", "El tercer producto", 899, "http://www.google.com", "ADF122", 10)
-addProduct("Producto 4", "El cuarto producto", 899, "http://www.google.com", "ADF124", 10)
-addProduct("Producto 5", "El quinto producto", 899, "http://www.google.com", "ADF125")
-
-
-// Test
-
-//Se pide mostrar todos los productos en el array products
-getProducts();
-
-// Se pide mostrar el producto con el id pasado por parametro
-getProductById(2);
-
-// Funcion utilizada para cambiar el titulo y la descripcion del id 3
-updateProduct(3, {
-    title: "Producto 3",
-    descrtiption: "El tercer producto"})
-
-//Se pide a la funcion deleteProduct eliminar el producto 2
-// deleteProduct(2)
+export default {
+    addProduct,
+    getProducts,
+    getProductById,
+    updateProduct,
+    deleteProduct
+}
