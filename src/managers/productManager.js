@@ -25,6 +25,7 @@ const addProduct = async (product) => {
         thumbnail,
         code,
         stock,
+        status: true,
 
     }
 
