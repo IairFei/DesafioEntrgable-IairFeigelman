@@ -7,14 +7,36 @@ import fs from 'fs';
 let products = []
 
 //Se asigna un path file en el que va a contener el JSON de los productos
-let pathFile = "./src/data/products.json"
+const pathFile = "./src/data/products.json"
 
 
 //Esta funcion se utiliza para agregar el producto al array de products
 
+// Esta funcion devuelve todos los productos dentro del array products
+// Recibe por parametro el limite a mostrar
+const getProducts = async (limit) => {
+
+    //En esta linea, readFile lee el contenido del path file y lo guarda en una constante
+    const productsJson = await fs.promises.readFile(pathFile, "utf-8")
+    
+    //Se convierten los datos traidos como String en objetos y si no se pudo, devuelve un array vacio
+    if (productsJson.includes("[")) {
+        products = JSON.parse(productsJson)
+      }else {
+        fs.promises.writeFile(pathFile, JSON.stringify(products))
+      }
+
+    //Si el limite recibe undefined, retorna todos los productos
+    if (!limit) return products
+
+
+    //Retorna los productos con un limite obtenido por parametro, desde la posicion 0 hasta el limite
+    return products.slice(0, limit)
+};
+
 const addProduct = async (product) => {
     const { title, descrtiption, price, thumbnail, code, stock } = product;
-    await getProduct()
+    await getProducts()
     //Aca se asignan las variables pasadas por parametro
 
         const newProduct ={
@@ -56,23 +78,6 @@ Si lo encuentra, avisa por consola que se encontro un objeto con el mismo code y
     await fs.promises.writeFile(pathFile, JSON.stringify(products))
 }
 
-// Esta funcion devuelve todos los productos dentro del array products
-// Recibe por parametro el limite a mostrar
-const getProducts = async (limit) => {
-  
-    //En esta linea, readFile lee el contenido del path file y lo guarda en una constante
-    const productsJson = await fs.promises.readFile(pathFile, "utf-8")
-    //Se convierten los datos traidos como String en objetos y si no se pudo, devuelve un array vacio
-    products = JSON.parse(productsJson) || []
-
-    //Si el limite recibe undefined, retorna todos los productos
-    if (!limit) return products
-
-
-
-    //Retorna los productos con un limite obtenido por parametro, desde la posicion 0 hasta el limite
-    return products.slice(0, limit)
-};
 
 /* Esta funcion se utiliza para buscar un producto con un determinado id en el array products.
 Busca en el array un id === al pasado por parametro con la funcion find (Esta funcion recorre todos los id en el array products)
@@ -88,7 +93,6 @@ const getProductById = async (id) => {
         return;
     }
     else {
-        console.log(product)
         return product;
     }
 }

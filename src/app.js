@@ -1,6 +1,5 @@
 //Inicializamos 
 import express from 'express';
-import productManager from './managers/productManager.js';
 import router from "./routes/index.js"
 
 const app = express();

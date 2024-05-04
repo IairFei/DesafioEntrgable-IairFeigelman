@@ -23,9 +23,9 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const product = req.body;
-
+    
     const newProduct = await productManager.addProduct(product);
-
+    console.log("OK");
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ error: "Error interno del servidor" });
@@ -39,7 +39,7 @@ router.put("/:pid", async (req, res) => {
     const { pid } = req.params;
     const product = req.body;
 
-    const updateProduct = await productManager.updateProduct(pid, product);
+    const updateProduct = await productManager.updateProduct(+pid, product);
 
     res.status(201).json(updateProduct);
   } catch (error) {
@@ -53,7 +53,7 @@ router.delete("/:pid", async (req, res) => {
       //llamada pid (numero definido en el servidor)
       const { pid } = req.params;
 
-      await productManager.deleteProduct(pid)
+      await productManager.deleteProduct(+pid)
   
       res.status(201).json({ message: `El producto ${pid}, se elimino correctamente` });
 
@@ -69,9 +69,10 @@ router.get("/:pid", async (req, res) => {
     //llamada pid (numero definido en el servidor)
     const { pid } = req.params;
 
+    console.log(pid);
     //pid es recibido como un string, entonces hay que paresar la variable para que sea int
     //y pueda pasarla por parametro
-    const product = await productManager.getProductById(parseInt(pid));
+    const product = await productManager.getProductById(+pid);
 
     if (!product) {
       return res.status(404).json({ error: "El producto no existe" });
