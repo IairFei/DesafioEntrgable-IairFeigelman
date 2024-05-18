@@ -1,6 +1,9 @@
 //Inicializamos 
 import express from 'express';
 import router from "./routes/index.js"
+import { connectMongoDB } from './config/mongoDb.config.js';
+
+connectMongoDB();
 
 const app = express();
 // Middlewares: son operaciones que se ejecutan de manera intermedia entre la peticion del cliente

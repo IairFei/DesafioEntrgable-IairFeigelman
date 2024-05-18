@@ -1,5 +1,5 @@
 import fs from "fs";
-import productsManager from "../managers/productManager.js";
+import productsManager from "../fsManagers/productsManager.js";
 
 
 let carts = [];
@@ -40,11 +40,11 @@ const getCartById = async (cid) => {
 
   //Busca el carrito por su ID en el array, si lo encuentra, lo devuelve
   //Si no lo encuentra, muestra el error
-  const cart = carts.find((c) => c.id === cid);
+  const cart = carts.find(c => c.id === cid);
 
   if (!cart) return `No se encontro el carrito con el id ${cid}`;
 
-  return cart;
+  return cart.products;
 };
 
 //Metodo utilizado para agregar un producto al carrito, se tiene que pasar por parametro

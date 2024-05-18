@@ -35,14 +35,14 @@ const getProducts = async (limit) => {
 };
 
 const addProduct = async (product) => {
-    const { title, descrtiption, price, thumbnail, code, stock } = product;
+    const { title, description, price, thumbnail, code, stock } = product;
     await getProducts()
     //Aca se asignan las variables pasadas por parametro
 
         const newProduct ={
         id: products.length + 1,
         title,
-        descrtiption,
+        description,
         price,
         thumbnail,
         code,
