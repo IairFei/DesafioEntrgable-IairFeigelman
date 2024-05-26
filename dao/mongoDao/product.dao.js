@@ -1,8 +1,8 @@
 import { productModel } from "../models/product.model.js";
 
-//Retorna todos los productos cargados
-const getAll = async () => {
-    const products = await productModel.find();
+//Recibe el pedido de la query y lo retorna con las opciones establecidas previamente del paginate
+const getAll = async (query, options) => {
+    const products = await productModel.paginate(query, options);
     return products;
 }
 
