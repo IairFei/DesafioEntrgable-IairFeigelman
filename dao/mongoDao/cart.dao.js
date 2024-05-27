@@ -61,15 +61,37 @@ const deleteProductInCart = async (cid, pid) => {
 }
 
 const update = async (cid, data) => {
-    console.log(data)
-    await cartModel.updateOne({ _id: cid }, { $set: { products: [] } });
 
-    await cartModel.updateOne({ _id: cid }, { $set: { products: data } });
+  const cart = await cartModel.findById(cid);
 
-    const cart = await cartModel.findById(cid);
+  if (!cart) return { cart: false };
 
-    return cart;
-}
+  await cartModel.findOneAndUpdate({ _id: cid }, { $set: { products: data.products } });
+  
+  const cartUpdated = await cartModel.findById(cid);
+
+  return cartUpdated;
+};
+
+const updateQuantityProductInCart = async (cid, pid, quantity) => {
+    const product = await productModel.findById(pid);
+    if (!product) return { product: false };
+  
+    const cart = await cartModel.findOneAndUpdate({ _id: cid, "products.product": pid }, { $set: { "products.$.quantity": quantity } });
+    if (!cart) return { cart: false };
+  
+    const cartUpdate = await cartModel.findById(cid);
+    return cartUpdate;
+};
+
+
+const deleteAllProductsInCart = async (cid) => {
+    const cart = await cartModel.findByIdAndUpdate(cid, { $set: { products: [] } });
+  
+    const cartUpdate = await cartModel.findById(cid);
+    return cartUpdate;
+ };
+  
 
 export default{
     getById, 

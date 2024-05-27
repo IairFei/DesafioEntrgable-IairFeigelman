@@ -5,8 +5,9 @@ const cartCollection = "carts"
 //Definimos el Schema de los carritos
 const cartSchema = new mongoose.Schema({
     products: {
+        
         //En esta linea, se relaciona la propiedad de product
-        type: [{product: {type: mongoose.Schema.Types.ObjectId, ref: "products"}, quantity: Number}] 
+     type: [{product: {type: mongoose.Schema.Types.ObjectId, ref: "products"}, quantity: Number}] 
     }
 });
 //Middleware

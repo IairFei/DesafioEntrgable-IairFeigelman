@@ -102,7 +102,6 @@ router.get("/:pid", async (req, res) => {
     //Req es lo que recibe de la query del servidor y lo almacena en una constante
     //llamada pid (numero definido en el servidor)
     const { pid } = req.params;
-    console.log(pid, typeof pid);
     // console.log(pid);
     //pid es recibido como un string, entonces hay que paresar la variable para que sea int
     //y pueda pasarla por parametro
