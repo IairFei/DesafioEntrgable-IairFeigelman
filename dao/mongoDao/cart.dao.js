@@ -60,6 +60,8 @@ const deleteProductInCart = async (cid, pid) => {
     return cartUpdate
 }
 
+//Este metodo hace un update de los productos pasados por parametro y 
+//"resetea" el carrito con unicamente los datos recibidos
 const update = async (cid, data) => {
 
   const cart = await cartModel.findById(cid);
@@ -73,10 +75,12 @@ const update = async (cid, data) => {
   return cartUpdated;
 };
 
+//Este metodo suma la cantidad de productos solicitados por parametro
 const updateQuantityProductInCart = async (cid, pid, quantity) => {
     const product = await productModel.findById(pid);
     if (!product) return { product: false };
   
+    //Esta linea busca el producto por id, le asigna el producto solicitado a sumar y le suma la cantidad pedida
     const cart = await cartModel.findOneAndUpdate({ _id: cid, "products.product": pid }, { $set: { "products.$.quantity": quantity } });
     if (!cart) return { cart: false };
   
@@ -84,10 +88,11 @@ const updateQuantityProductInCart = async (cid, pid, quantity) => {
     return cartUpdate;
 };
 
-
+//Este metodo busca por id el carrito y vacia los productos
 const deleteAllProductsInCart = async (cid) => {
     const cart = await cartModel.findByIdAndUpdate(cid, { $set: { products: [] } });
-  
+    if (!cart) return { cart: false };
+
     const cartUpdate = await cartModel.findById(cid);
     return cartUpdate;
  };
@@ -99,4 +104,6 @@ export default{
     addProductToCart,
     deleteProductInCart,
     update,
+    updateQuantityProductInCart,
+    deleteAllProductsInCart
 }

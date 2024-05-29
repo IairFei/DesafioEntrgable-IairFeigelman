@@ -137,4 +137,25 @@ router.put("/:cid/product/:pid", async (req, res) => {
     }
 });
 
+//Elimina todos los productos del carrito
+router.delete("/:cid", async (req, res) => {
+
+    try {
+        const {cid} = req.params
+        const cart = await cartDao.deleteAllProductsInCart(cid)
+
+        //Si el carrito pasado por paramentro devuelve false al momento de buscarlo, mustra el error
+        if(cart.cart == false){
+            return res.status(404).json({status: 'Error', msg: `No se encontro el carrito con el id: ${cid}`})
+        }
+
+        res.status(201).json({status: 'success', payload: cart})
+
+    } catch (error) {
+        res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+        console.log(error.message);
+    }
+
+})
+
 export default router
