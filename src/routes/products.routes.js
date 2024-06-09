@@ -1,11 +1,11 @@
 import { Router } from "express";
-import productDao from "../../dao/mongoDao/product.dao.js";
+import productDao from "../dao/mongoDao/product.dao.js";
 
 const router = Router();
 
 //El servidor pide mediante una query todos los productos, en caso de que pase un limite
 //solo se mostrara la cantidad solicitada
-router.get("/", async (req, res) => {
+router.get("/",async (req, res) => {
   try {
     //Req es lo que recibe de la query del servidor y lo almacena en una constante llamada limit
     const { limit, page, sort, category, status } = req.query;

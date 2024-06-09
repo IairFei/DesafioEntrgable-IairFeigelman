@@ -2,6 +2,9 @@
 import express from 'express';
 import router from "./routes/index.js"
 import { connectMongoDB } from './config/mongoDb.config.js';
+import session from "express-session";
+import MongoStore from "connect-mongo"
+
 
 connectMongoDB();
 
@@ -12,6 +15,14 @@ const app = express();
 // Middleware para parsear JSON en las peticiones
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+   store: MongoStore.create({
+    mongoUrl: "mongodb+srv://admin:admin123@e-commerce.9grfoag.mongodb.net/ecommerce",
+    ttl: 15
+   }),
+   secret: "CodigoSecreto",
+   resave: true
+}))
 
 //Todas las rutas que tengamos, tendran prefijo /api
 app.use("/api", router)
