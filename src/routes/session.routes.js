@@ -1,45 +1,90 @@
 import { Router } from "express";
 import userDao from "../dao/mongoDao/user.dao.js";
+import { isValidPassword } from "../utils/hashPassword.js";
+import passport from "passport";
+import { createToken, verifyToken } from "../utils/jwt.js";
 
 const router = Router();
 
 //Registramos el usuario
-router.post("/register", async (req, res) => {
+router.post("/register", passport.authenticate("register"), async (req, res) => {
   try {
-    const userData = req.body;
-    const newUser = await userDao.create(userData);
 
-    if (!newUser) {
-      return res.status(400).json({ status: "Error", msg: "No se pudo crear el usuario" });
-    }
+    res.status(201).json({ status: "success", msg: "User creado"});
 
-    res.status(201).json({ status: "success", payload: newUser });
+  } catch (error) {
+
+    res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+
+    console.log(error.message);
+ 
+  }
+});
+
+//Login de forma local
+router.post("/login",passport.authenticate("login"),   async (req, res) => {
+  try {
+
+    res.status(200).json({ status: "success", payload: req.user })
+
   } catch (error) {
     res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     console.log(error.message);
   }
 });
 
-router.post("/login", async (req, res) => {
+
+router.post("/jwt", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    
+    const {email, password} = req.body
 
-    // Verifica que el usuario sea admin
-    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
-      req.session.user = {email,role: "admin"};
-      return res.status(200).json({ status: "success", payload: req.session.user });
+    const user = await userDao.getByEmail(email)
+
+    if(!user || !isValidPassword(user, password)){
+      return res.status(401).json({ status: "Error", msg: "Usiuario o contraseña invalidos" });
     }
 
-    // Si no es admin
-    const user = await userDao.getByEmail(email);
-    if (!user || user.password !== password) {
-      return res.status(401).json({ status: "Error", msg: "Email o password no validos" });
+    const token = createToken(user)
+
+    res.cookie("token", token, {httpOnly: true})
+
+    return res.status(200).json({ status: "success", payload: user, token })
+
+  } catch (error) {
+    res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+    console.log(error.message);
+  }
+});
+
+router.get("/current", (req, res) =>{
+  try {
+    const token = req.cookies.token
+
+    const checkToken = verifyToken(token)
+
+    if(!checkToken) {
+      return res.status(403).json({ status: "Error", msg: "Token invalido"})
     }
+    
+    return res.status(200).json({ status: "success", payload: checkToken })
 
-    //Devuelve el rol del user
-    req.session.user = {email,role: "user"};
 
-    res.status(200).json({ status: "success", payload: req.session.user });
+  } catch (error) {
+    res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+    console.log(error.message);
+  }
+}) 
+
+//Login con cuentas de Google
+router.get("/google",passport.authenticate("google", {
+  scope: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
+  session:false
+}),   async (req, res) => {
+  try {
+
+    res.status(200).json({ status: "success", payload: req.user })
+
   } catch (error) {
     res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
     console.log(error.message);

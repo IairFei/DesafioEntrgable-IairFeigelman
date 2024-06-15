@@ -4,6 +4,9 @@ import router from "./routes/index.js"
 import { connectMongoDB } from './config/mongoDb.config.js';
 import session from "express-session";
 import MongoStore from "connect-mongo"
+import passport from "passport";
+import initializePassport from './config/passport.config.js';
+import cookieParser from "cookie-parser";
 
 
 connectMongoDB();
@@ -15,14 +18,21 @@ const app = express();
 // Middleware para parsear JSON en las peticiones
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser("secret"));
 app.use(session({
    store: MongoStore.create({
     mongoUrl: "mongodb+srv://admin:admin123@e-commerce.9grfoag.mongodb.net/ecommerce",
     ttl: 15
    }),
    secret: "CodigoSecreto",
-   resave: true
+   resave: true,
+   saveUninitialized: true
 }))
+
+app.use(passport.initialize());
+app.use(passport.session());
+initializePassport()
+
 
 //Todas las rutas que tengamos, tendran prefijo /api
 app.use("/api", router)
