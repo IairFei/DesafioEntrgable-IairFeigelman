@@ -1,13 +1,13 @@
 import { Router } from "express";
-import productsRouters from "../routes/products.routes.js";
-import cartsRouters from "../routes/carts.routes.js";
-import sessionRouters from "../routes/session.routes.js"
-import { isLogin } from "../middleware/isLogin.middleware.js";
-
+import cartsRouters from "./carts.routes.js";
+import productsRouters from "./products.routes.js";
+import sessionRouters from "./sessions.routes.js";
+import userRouters from "./users.routes.js";
 const router = Router();
 
-router.use("/products", isLogin, productsRouters);
+router.use("/products", productsRouters);
 router.use("/carts", cartsRouters);
 router.use("/session", sessionRouters);
+router.use("/user", userRouters);
 
 export default router;
